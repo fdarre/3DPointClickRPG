@@ -1,58 +1,55 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Mover : MonoBehaviour
+namespace Movement
 {
-    #region Init
-
-    void Awake()
+    public class Mover : MonoBehaviour
     {
-        _navMeshAgent = GetComponent<NavMeshAgent>();
-        _animator = GetComponentInChildren<Animator>();
-        _mainCamera = Camera.main;
-    }
+        #region Init
 
-    #endregion
-
-    #region Update
-
-    void Update()
-    {
-        if (Input.GetMouseButton(0))
+        private void Awake()
         {
-            MoveToCursor();
+            _navMeshAgent = GetComponent<NavMeshAgent>();
+            _animator = GetComponentInChildren<Animator>();
         }
-        UpdateAnimator();
-    }
 
-    #endregion
+        #endregion
 
+        #region Public
 
-    #region Private
-
-    private void UpdateAnimator()
-    {
-        Vector3 velocity = _navMeshAgent.velocity;
-        Vector3 localVelocity = transform.InverseTransformDirection(velocity);
-        float speed = localVelocity.z;
-        _animator.SetFloat("forwardSpeed", speed);
-
-    }
-
-    private void MoveToCursor()
-    {
-        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        public void MoveTo(Vector3 destination)
         {
-            _navMeshAgent.SetDestination(hit.point);
+            _navMeshAgent.SetDestination(destination);
         }
+
+
+        #endregion
+
+        #region Update
+
+        private void Update()
+        {
+            UpdateAnimator();
+        }
+
+        #endregion
+
+
+        #region Private
+
+        private void UpdateAnimator()
+        {
+            Vector3 velocity = _navMeshAgent.velocity;
+            Vector3 localVelocity = transform.InverseTransformDirection(velocity);
+            float speed = localVelocity.z;
+            _animator.SetFloat(_forwardSpeed, speed);
+
+        }
+
+        private NavMeshAgent _navMeshAgent;
+        private Animator _animator;
+        private static readonly int _forwardSpeed = Animator.StringToHash("forwardSpeed");
+
+        #endregion
     }
-
-    private NavMeshAgent _navMeshAgent;
-    private Camera _mainCamera;
-    private Animator _animator;
-
-    #endregion
 }
