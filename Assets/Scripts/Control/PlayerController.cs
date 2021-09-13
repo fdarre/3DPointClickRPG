@@ -1,3 +1,4 @@
+using RPG.Combat;
 using RPG.Movement;
 using UnityEngine;
 
@@ -12,24 +13,56 @@ namespace RPG.Control
         }
         
         private void Update()
-        { 
-            if (Input.GetMouseButton(0))
-            { 
-                MoveToCursor();
+        {
+            if(CombatInteraction()) return;
+            if(MovementInteraction()) return;
+        }
+
+        private bool CombatInteraction()
+        {
+            _lastRay = GetRayFromMousePosition(); //@todo
+            
+            RaycastHit[] hits = Physics.RaycastAll(_lastRay);
+            
+                foreach (var hit in hits)
+                {
+                    CombatTarget target = hit.collider.GetComponentInParent<CombatTarget>();  //replace by tags
+                    
+                    if (target == null) { continue; }
+                    
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        GetComponent<Fighter>().Attack(target);
+                    }
+                    return true;
+                }
+                return false;
+
+        }
+
+        private bool MovementInteraction()
+        {
+            _lastRay = GetRayFromMousePosition();
+            
+            if (Physics.Raycast(_lastRay, out RaycastHit hit))
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    _mover.MoveTo(hit.point);
+                }
+                return true;
             }
+
+            return false;
         }
         
-        private void MoveToCursor()
+        private Ray GetRayFromMousePosition()
         {
-            Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                _mover.MoveTo(hit.point);
-            }
+            return _mainCamera.ScreenPointToRay(Input.mousePosition);
         }
 
         private Mover _mover;
         private Camera _mainCamera;
+        private Ray _lastRay;
     }
 }
