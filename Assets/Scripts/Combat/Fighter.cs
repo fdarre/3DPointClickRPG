@@ -1,7 +1,9 @@
 ﻿using System;
+using Combat;
 using Core;
 using UnityEngine;
 using RPG.Movement;
+using UnityEngine.Serialization;
 
 namespace RPG.Combat
 {
@@ -10,6 +12,8 @@ namespace RPG.Combat
         #region Expose in Inspector
 
         [SerializeField] private float weaponRange = 3f;
+        [SerializeField] private float weaponDamage = 10f;
+        [SerializeField] private float delayBetweenAttacks = 1f;
         
         #endregion
         
@@ -19,6 +23,7 @@ namespace RPG.Combat
         {
             _mover = GetComponent<Mover>();
             _scheduler = GetComponent<ActionScheduler>();
+            _animator = GetComponentInChildren<Animator>();
         }
         
         #endregion
@@ -36,6 +41,11 @@ namespace RPG.Combat
         {
             _target = null;
         }
+
+        public void Hit()
+        {
+            _target.GetComponent<Health>().Takedamage(weaponDamage);
+        }
         
         #endregion
         
@@ -44,6 +54,7 @@ namespace RPG.Combat
 
         private void Update()
         {
+            _timeSinceLastAttack += Time.deltaTime;
             
             if (_target == null) { return; }
             
@@ -55,7 +66,16 @@ namespace RPG.Combat
             else
             {
                 _mover.Cancel();
+                AttackBehaviour();
             }
+        }
+
+        private void AttackBehaviour()
+        {
+            if (_timeSinceLastAttack <= delayBetweenAttacks) return;
+            
+            _animator.SetTrigger(attack);
+            _timeSinceLastAttack = 0f;
         }
 
         private bool GetIsInRange()
@@ -69,8 +89,11 @@ namespace RPG.Combat
         #region Private
         
         private Transform _target;
+        private Animator _animator;
         private Mover _mover;
         private ActionScheduler _scheduler;
+        private float _timeSinceLastAttack = 0f;
+        private static readonly int attack = Animator.StringToHash("attack");
 
         #endregion
     }
