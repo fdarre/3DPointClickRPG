@@ -1,9 +1,10 @@
+using Core;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace RPG.Movement
 {
-    public class Mover : MonoBehaviour
+    public class Mover : MonoBehaviour, IAction
     {
         #region Init
 
@@ -11,15 +12,28 @@ namespace RPG.Movement
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _animator = GetComponentInChildren<Animator>();
+            _scheduler = GetComponent<ActionScheduler>();
         }
 
         #endregion
 
         #region Public
 
+        public void StartMoveAction(Vector3 destination)
+        {
+            _scheduler.StartAction(this);
+            MoveTo(destination);               
+        }
+
         public void MoveTo(Vector3 destination)
         {
             _navMeshAgent.SetDestination(destination);
+            _navMeshAgent.isStopped = false;
+        }
+        
+        public void Cancel()
+        {
+            _navMeshAgent.isStopped = true;
         }
 
 
@@ -48,8 +62,10 @@ namespace RPG.Movement
 
         private NavMeshAgent _navMeshAgent;
         private Animator _animator;
+        private ActionScheduler _scheduler;
         private static readonly int _forwardSpeed = Animator.StringToHash("forwardSpeed");
 
         #endregion
+        
     }
 }
