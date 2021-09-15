@@ -27,9 +27,9 @@ namespace RPG.Control
                 foreach (var hit in hits)
                 {
                     CombatTarget target = hit.collider.GetComponentInParent<CombatTarget>();  //replace by tags
-                    
-                    if (target == null) { continue; }
-                    
+
+                    if (!GetComponent<Fighter>().GetIsValidTarget(target)) {continue;} //optimize
+
                     if (Input.GetMouseButtonDown(0))
                     {
                         GetComponent<Fighter>().Attack(target);

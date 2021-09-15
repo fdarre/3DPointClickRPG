@@ -30,6 +30,14 @@ namespace RPG.Combat
         
         
         #region Public
+        
+        public bool GetIsValidTarget(CombatTarget combatTarget)
+        {
+            if (combatTarget == null) { return false; }
+            
+            Health targetToTest = combatTarget.GetComponent<Health>();
+            return targetToTest != null && !targetToTest.IsDead;
+        }
 
         public void Attack(CombatTarget combatTarget)
         {
@@ -70,7 +78,7 @@ namespace RPG.Combat
                 AttackBehaviour();
             }
         }
-
+        
         private void AttackBehaviour()
         {
             if (_timeSinceLastAttack <= delayBetweenAttacks) return;
