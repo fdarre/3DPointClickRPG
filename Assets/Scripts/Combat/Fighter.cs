@@ -53,6 +53,7 @@ namespace RPG.Combat
 
         public void Hit()
         {
+            if (_target == null) return;
             _target.TakeDamage(weaponDamage);
         }
         
@@ -83,8 +84,14 @@ namespace RPG.Combat
         {
             if (_timeSinceLastAttack <= delayBetweenAttacks) return;
             
-            _animator.SetTrigger(_attack);
+            TriggerAttack();
             _timeSinceLastAttack = 0f;
+        }
+
+        private void TriggerAttack()
+        {
+            _animator.ResetTrigger(_stopAttacking);
+            _animator.SetTrigger(_attack);
         }
 
         private bool GetIsInRange()
