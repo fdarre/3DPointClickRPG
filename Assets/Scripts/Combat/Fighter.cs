@@ -34,17 +34,18 @@ namespace RPG.Combat
         public void Attack(CombatTarget combatTarget)
         {
             _scheduler.StartAction(this);
-            _target = combatTarget.transform;
+            _target = combatTarget.GetComponent<Health>(); //optimize ?
         }
 
         public void Cancel()
         {
+            _animator.SetTrigger(_stopAttacking);
             _target = null;
         }
 
         public void Hit()
         {
-            _target.GetComponent<Health>().Takedamage(weaponDamage);
+            _target.TakeDamage(weaponDamage);
         }
         
         #endregion
@@ -56,12 +57,12 @@ namespace RPG.Combat
         {
             _timeSinceLastAttack += Time.deltaTime;
             
-            if (_target == null) { return; }
+            if (_target == null || _target.IsDead ) { return; }
             
             //@todo: Use stopping distance instead ?
             if (!GetIsInRange())
             {
-                _mover.MoveTo(_target.position);
+                _mover.MoveTo(_target.transform.position);
             }
             else
             {
@@ -74,13 +75,13 @@ namespace RPG.Combat
         {
             if (_timeSinceLastAttack <= delayBetweenAttacks) return;
             
-            _animator.SetTrigger(attack);
+            _animator.SetTrigger(_attack);
             _timeSinceLastAttack = 0f;
         }
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, _target.position) < weaponRange;
+            return Vector3.Distance(transform.position, _target.transform.position) < weaponRange;
         }
 
         #endregion
@@ -88,12 +89,13 @@ namespace RPG.Combat
         
         #region Private
         
-        private Transform _target;
+        private Health _target;
         private Animator _animator;
         private Mover _mover;
         private ActionScheduler _scheduler;
         private float _timeSinceLastAttack = 0f;
-        private static readonly int attack = Animator.StringToHash("attack");
+        private static readonly int _attack = Animator.StringToHash("attack");
+        private static readonly int _stopAttacking = Animator.StringToHash("stopAttacking");
 
         #endregion
     }
