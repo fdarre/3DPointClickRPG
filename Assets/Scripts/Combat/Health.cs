@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Combat
+namespace RPG.Combat
 {
     public class Health : MonoBehaviour
     {

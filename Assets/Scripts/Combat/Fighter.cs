@@ -1,5 +1,4 @@
 ﻿using System;
-using Combat;
 using Core;
 using UnityEngine;
 using RPG.Movement;

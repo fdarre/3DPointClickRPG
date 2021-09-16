@@ -4,7 +4,7 @@ using System.Globalization;
 using RPG.Combat;
 using UnityEngine;
 
-namespace Combat
+namespace RPG.Combat
 {
     public class HitEvent : MonoBehaviour
     {
