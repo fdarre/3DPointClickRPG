@@ -30,7 +30,7 @@ namespace RPG.Combat
         
         #region Public
         
-        public bool GetIsValidTarget(CombatTarget combatTarget)
+        public bool GetIsValidTarget(GameObject combatTarget)
         {
             if (combatTarget == null) { return false; }
             
@@ -38,7 +38,7 @@ namespace RPG.Combat
             return targetToTest != null && !targetToTest.IsDead;
         }
 
-        public void Attack(CombatTarget combatTarget)
+        public void Attack(GameObject combatTarget)
         {
             _scheduler.StartAction(this);
             _target = combatTarget.GetComponent<Health>(); //optimize ?
