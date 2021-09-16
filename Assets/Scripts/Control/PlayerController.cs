@@ -9,11 +9,13 @@ namespace RPG.Control
         private void Awake()
         {
             _mover = GetComponent<Mover>();
+            _health = GetComponent<Health>();
             _mainCamera = Camera.main;
         }
         
         private void Update()
         {
+            if(_health.IsDead) return;
             if(CombatInteraction()) return;
             if(MovementInteraction()) return;
         }
@@ -64,6 +66,7 @@ namespace RPG.Control
         }
 
         private Mover _mover;
+        private Health _health;
         private Camera _mainCamera;
         private Ray _lastRay;
     }

@@ -1,4 +1,5 @@
 using Core;
+using RPG.Combat;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,6 +14,7 @@ namespace RPG.Movement
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _animator = GetComponentInChildren<Animator>();
             _scheduler = GetComponent<ActionScheduler>();
+            _health = GetComponent<Health>();
         }
 
         #endregion
@@ -43,6 +45,7 @@ namespace RPG.Movement
 
         private void Update()
         {
+            _navMeshAgent.enabled = !_health.IsDead;
             UpdateAnimator();
         }
 
@@ -63,6 +66,7 @@ namespace RPG.Movement
         private NavMeshAgent _navMeshAgent;
         private Animator _animator;
         private ActionScheduler _scheduler;
+        private Health _health;
         private static readonly int _forwardSpeed = Animator.StringToHash("forwardSpeed");
 
         #endregion

@@ -107,7 +107,7 @@ namespace RPG.Combat
         private Animator _animator;
         private Mover _mover;
         private ActionScheduler _scheduler;
-        private float _timeSinceLastAttack = 0f;
+        private float _timeSinceLastAttack = 100f;
         private static readonly int _attack = Animator.StringToHash("attack");
         private static readonly int _stopAttacking = Animator.StringToHash("stopAttacking");
 

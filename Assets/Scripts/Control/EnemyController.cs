@@ -18,6 +18,7 @@ namespace RPG.Control
         {
             _player = GameObject.FindWithTag("Player"); //Start ?
             _fighter = GetComponent<Fighter>(); //start ?
+            _health = GetComponent<Health>(); 
         }
 
         #endregion
@@ -26,6 +27,8 @@ namespace RPG.Control
 
         private void Update()
         {
+            if(_health.IsDead) return;
+            
             if (IsPlayerInRange())
             {
                 _fighter.Attack(_player);
@@ -48,6 +51,7 @@ namespace RPG.Control
 
         private GameObject _player;
         private Fighter _fighter;
+        private Health _health;
 
         #endregion
         

@@ -1,3 +1,4 @@
+using Core;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -45,6 +46,7 @@ namespace RPG.Combat
         {
             _animator.SetTrigger(_die);
             IsDead = true;
+            GetComponent<ActionScheduler>().CancelCurrentAction();
         }
         
         private Animator _animator;
