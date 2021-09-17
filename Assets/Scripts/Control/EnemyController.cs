@@ -10,8 +10,11 @@ namespace RPG.Control
     {
         #region Expose in Inspector
         
+        [SerializeField] private float waypointDistanceTolerance = 1f;
         [SerializeField] private float chaseDistance = 5f;
         [SerializeField] private float suspicionStateDuration = 8f;
+        [SerializeField] private PatrolPath patrolPath;
+
                 
         #endregion
         
@@ -42,7 +45,7 @@ namespace RPG.Control
             if (IsPlayerInRange())
             {
                 _timeSinceSawPlayer = 0f;
-                AttackState();
+                AttackingState();
             }
             else if (_timeSinceSawPlayer < suspicionStateDuration)
             {
@@ -50,18 +53,48 @@ namespace RPG.Control
             }
             else
             {
-                GuardState();
+                PatrollingState();
             }
 
             _timeSinceSawPlayer += Time.deltaTime;
         }
 
-        private void GuardState()
+        private void PatrollingState()
         {
-            _mover.StartMoveAction(_guardOriginalPosition); //@todo: optimize ? Called at each frame.
+            Vector3 nextPosition = _guardOriginalPosition;
+            
+            //@todo: Simplify
+            if (patrolPath != null)
+            {
+                if (AtWaypoint())
+                {
+                    CycleWaypoint();
+                }
+
+                nextPosition = GetCurrentWaypointPosition();
+            }
+            
+            _mover.StartMoveAction(nextPosition);
         }
 
-        private void AttackState()
+        private Vector3 GetCurrentWaypointPosition()
+        {
+            return patrolPath.GetWaypointPosition(_currentWaypointIndex);
+        }
+        
+        private void CycleWaypoint()
+        {
+            _currentWaypointIndex = patrolPath.GetNextIndex(_currentWaypointIndex);
+        }
+        
+
+        private bool AtWaypoint()
+        {
+            float distanceToWaypoint = Vector3.Distance(transform.position, GetCurrentWaypointPosition());
+            return distanceToWaypoint < waypointDistanceTolerance;
+        }
+
+        private void AttackingState()
         {
             _fighter.Attack(_player);
         }
@@ -93,6 +126,7 @@ namespace RPG.Control
         private Health _health;
         private Vector3 _guardOriginalPosition;
         private float _timeSinceSawPlayer = Mathf.Infinity;
+        private int _currentWaypointIndex = 0;
 
         #endregion
 
