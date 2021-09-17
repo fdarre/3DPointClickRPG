@@ -13,6 +13,7 @@ namespace RPG.Control
         [SerializeField] private float waypointDistanceTolerance = 1f;
         [SerializeField] private float chaseDistance = 5f;
         [SerializeField] private float suspicionStateDuration = 8f;
+        [SerializeField] private float waypointWaitTime = 2f;
         [SerializeField] private PatrolPath patrolPath;
 
                 
@@ -44,7 +45,6 @@ namespace RPG.Control
             
             if (IsPlayerInRange())
             {
-                _timeSinceSawPlayer = 0f;
                 AttackingState();
             }
             else if (_timeSinceSawPlayer < suspicionStateDuration)
@@ -56,14 +56,19 @@ namespace RPG.Control
                 PatrollingState();
             }
 
+            UpdateTimers();
+        }
+
+        private void UpdateTimers()
+        {
             _timeSinceSawPlayer += Time.deltaTime;
+            _timeSinceLastWaypoint += Time.deltaTime;
         }
 
         private void PatrollingState()
         {
             Vector3 nextPosition = _guardOriginalPosition;
             
-            //@todo: Simplify
             if (patrolPath != null)
             {
                 if (AtWaypoint())
@@ -74,7 +79,10 @@ namespace RPG.Control
                 nextPosition = GetCurrentWaypointPosition();
             }
             
-            _mover.StartMoveAction(nextPosition);
+            if (_timeSinceLastWaypoint > waypointWaitTime)
+            {
+                _mover.StartMoveAction(nextPosition);
+            }
         }
 
         private Vector3 GetCurrentWaypointPosition()
@@ -84,6 +92,7 @@ namespace RPG.Control
         
         private void CycleWaypoint()
         {
+            _timeSinceLastWaypoint = 0f;
             _currentWaypointIndex = patrolPath.GetNextIndex(_currentWaypointIndex);
         }
         
@@ -96,6 +105,7 @@ namespace RPG.Control
 
         private void AttackingState()
         {
+            _timeSinceSawPlayer = 0f;
             _fighter.Attack(_player);
         }
 
@@ -126,6 +136,7 @@ namespace RPG.Control
         private Health _health;
         private Vector3 _guardOriginalPosition;
         private float _timeSinceSawPlayer = Mathf.Infinity;
+        private float _timeSinceLastWaypoint = Mathf.Infinity;
         private int _currentWaypointIndex = 0;
 
         #endregion

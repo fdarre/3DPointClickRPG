@@ -34,7 +34,7 @@ namespace RPG.Control
 
                     if (!GetComponent<Fighter>().GetIsValidTarget(target.gameObject)) {continue;} //optimize
 
-                    if (Input.GetMouseButtonDown(0))
+                    if (Input.GetMouseButton(0))
                     {
                         GetComponent<Fighter>().Attack(target.gameObject);
                     }
