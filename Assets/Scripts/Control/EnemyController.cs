@@ -1,5 +1,7 @@
 using System;
+using Core;
 using RPG.Combat;
+using RPG.Movement;
 using UnityEngine;
 
 namespace RPG.Control
@@ -9,6 +11,7 @@ namespace RPG.Control
         #region Expose in Inspector
         
         [SerializeField] private float chaseDistance = 5f;
+        [SerializeField] private float suspicionStateDuration = 8f;
                 
         #endregion
         
@@ -19,6 +22,12 @@ namespace RPG.Control
             _player = GameObject.FindWithTag("Player"); //Start ?
             _fighter = GetComponent<Fighter>(); //start ?
             _health = GetComponent<Health>(); 
+            _mover = GetComponent<Mover>(); 
+        }
+
+        private void Start()
+        {
+            _guardOriginalPosition = transform.position;
         }
 
         #endregion
@@ -27,16 +36,39 @@ namespace RPG.Control
 
         private void Update()
         {
+            //@todo: State machine instead
             if(_health.IsDead) return;
             
             if (IsPlayerInRange())
             {
-                _fighter.Attack(_player);
+                _timeSinceSawPlayer = 0f;
+                AttackState();
+            }
+            else if (_timeSinceSawPlayer < suspicionStateDuration)
+            {
+                SuspicionState();
             }
             else
             {
-                _fighter.Cancel(); //@todo: optimize
+                GuardState();
             }
+
+            _timeSinceSawPlayer += Time.deltaTime;
+        }
+
+        private void GuardState()
+        {
+            _mover.StartMoveAction(_guardOriginalPosition); //@todo: optimize ? Called at each frame.
+        }
+
+        private void AttackState()
+        {
+            _fighter.Attack(_player);
+        }
+
+        private void SuspicionState()
+        {
+            GetComponent<ActionScheduler>().CancelCurrentAction();
         }
 
         private bool IsPlayerInRange()
@@ -45,15 +77,24 @@ namespace RPG.Control
             return distanceToPlayer <= chaseDistance;
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, chaseDistance);
+        }
+
         #endregion   
         
         #region Private
 
         private GameObject _player;
+        private Mover _mover;
         private Fighter _fighter;
         private Health _health;
+        private Vector3 _guardOriginalPosition;
+        private float _timeSinceSawPlayer = Mathf.Infinity;
 
         #endregion
-        
+
     }
 }
