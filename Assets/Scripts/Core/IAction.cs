@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace Core
+namespace RPG.Core
 {
     public interface IAction
     {

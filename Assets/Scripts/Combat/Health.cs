@@ -1,5 +1,8 @@
-using Core;
 using UnityEngine;
+
+using RPG.Core;
+using RPG.Animation;
+
 
 namespace RPG.Combat
 {
@@ -13,7 +16,7 @@ namespace RPG.Combat
 
         #region Properties
 
-        public bool IsDead { get; set; }
+        public bool IsDead { get; private set; }
 
         #endregion
         
@@ -21,7 +24,7 @@ namespace RPG.Combat
 
         private void Awake()
         {
-            _animator = GetComponentInChildren<Animator>();
+            _animationController = GetComponent<CharacterAnimationController>();
         }
 
         #endregion
@@ -44,14 +47,13 @@ namespace RPG.Combat
         
         private void Die()
         {
-            _animator.SetTrigger(_die);
+            _animationController.TriggerDeath();
             IsDead = true;
             GetComponent<ActionScheduler>().CancelCurrentAction();
         }
         
-        private Animator _animator;
-        private static readonly int _die = Animator.StringToHash("die");
-
+        private CharacterAnimationController _animationController;
+        
         #endregion
     }
 }

@@ -1,8 +1,12 @@
 ﻿using System;
-using Core;
+
 using UnityEngine;
-using RPG.Movement;
 using UnityEngine.Serialization;
+
+using RPG.Core;
+using RPG.Animation;
+using RPG.Movement;
+
 
 namespace RPG.Combat
 {
@@ -22,7 +26,7 @@ namespace RPG.Combat
         {
             _mover = GetComponent<Mover>();
             _scheduler = GetComponent<ActionScheduler>();
-            _animator = GetComponentInChildren<Animator>();
+            _animationController = GetComponent<CharacterAnimationController>();
         }
         
         #endregion
@@ -46,7 +50,7 @@ namespace RPG.Combat
 
         public void Cancel()
         {
-            _animator.SetTrigger(_stopAttacking);
+            _animationController.TriggerStopAttack();
             _target = null;
         }
 
@@ -83,16 +87,11 @@ namespace RPG.Combat
         {
             if (_timeSinceLastAttack <= delayBetweenAttacks) return;
             
-            TriggerAttack();
+            _animationController.TriggerAttack();
             _timeSinceLastAttack = 0f;
         }
 
-        private void TriggerAttack()
-        {
-            _animator.ResetTrigger(_stopAttacking);
-            _animator.SetTrigger(_attack);
-        }
-
+        
         private bool GetIsInRange()
         {
             return Vector3.Distance(transform.position, _target.transform.position) < weaponRange;
@@ -103,13 +102,11 @@ namespace RPG.Combat
         
         #region Private
         
+        private float _timeSinceLastAttack = 100f;
         private Health _target;
-        private Animator _animator;
         private Mover _mover;
         private ActionScheduler _scheduler;
-        private float _timeSinceLastAttack = 100f;
-        private static readonly int _attack = Animator.StringToHash("attack");
-        private static readonly int _stopAttacking = Animator.StringToHash("stopAttacking");
+        private CharacterAnimationController _animationController;
 
         #endregion
     }

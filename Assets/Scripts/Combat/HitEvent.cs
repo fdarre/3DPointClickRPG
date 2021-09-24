@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using RPG.Combat;
+
 using UnityEngine;
+
+using RPG.Combat;
 
 namespace RPG.Combat
 {
@@ -12,7 +14,6 @@ namespace RPG.Combat
 
         private void Awake()
         {
-            _health = GetComponent<Health>();
             _fighter = GetComponentInParent<Fighter>();
         }
 
@@ -27,7 +28,6 @@ namespace RPG.Combat
             _fighter.Hit();
         }
         
-        private Health _health;
         private Fighter _fighter;
 
         #endregion

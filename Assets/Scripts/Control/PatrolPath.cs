@@ -1,4 +1,5 @@
 using System;
+
 using UnityEngine;
 
 namespace RPG.Control
@@ -29,7 +30,7 @@ namespace RPG.Control
 
         private void OnDrawGizmos()
         {
-            for (int i = 0; i < transform.childCount; i++) //donne le nombre de children que le gameobject a !!!
+            for (int i = 0; i < transform.childCount; i++)
             {
                 int j = GetNextIndex(i);
                 Gizmos.DrawSphere(GetWaypointPosition(i), _WaypointGizmosRadius);

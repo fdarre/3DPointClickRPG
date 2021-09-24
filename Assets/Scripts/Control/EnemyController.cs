@@ -1,8 +1,12 @@
 using System;
-using Core;
+
+using UnityEngine;
+
+using RPG.Core;
+using RPG.Control;
 using RPG.Combat;
 using RPG.Movement;
-using UnityEngine;
+
 
 namespace RPG.Control
 {
@@ -129,15 +133,15 @@ namespace RPG.Control
         #endregion   
         
         #region Private
-
+        
+        private float _timeSinceSawPlayer = Mathf.Infinity;
+        private float _timeSinceLastWaypoint = Mathf.Infinity;
+        private int _currentWaypointIndex = 0;
         private GameObject _player;
         private Mover _mover;
         private Fighter _fighter;
         private Health _health;
         private Vector3 _guardOriginalPosition;
-        private float _timeSinceSawPlayer = Mathf.Infinity;
-        private float _timeSinceLastWaypoint = Mathf.Infinity;
-        private int _currentWaypointIndex = 0;
 
         #endregion
 
