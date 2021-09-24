@@ -38,7 +38,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3eef12377e594b4bbed70df61843680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  waypointDistanceTolerance: 1
   chaseDistance: 5
+  suspicionStateDuration: 8
+  waypointWaitTime: 2
+  patrolPath: {fileID: 0}
 --- !u!114 &3259536728374582786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +130,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6815968677308754494, guid: 01ca87de7975e4b41a13468a4d4df54b, type: 3}
       propertyPath: health
-      value: 30
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1818999908027997420, guid: 01ca87de7975e4b41a13468a4d4df54b, type: 3}
       propertyPath: m_Name

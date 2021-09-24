@@ -74,7 +74,7 @@ namespace RPG.Combat
             //@todo: Use stopping distance instead ?
             if (!GetIsInRange())
             {
-                _mover.MoveTo(_target.transform.position);
+                _mover.MoveTo(_target.transform.position, 1f); // 1f = full speed
             }
             else
             {

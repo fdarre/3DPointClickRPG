@@ -8,6 +8,13 @@ namespace RPG.Movement
 {
     public class Mover : MonoBehaviour, IAction
     {
+        #region Expose in Inspector
+        
+        [SerializeField] private float maxSpeed = 6f;
+                
+        #endregion
+        
+        
         #region Init
 
         private void Awake()
@@ -21,15 +28,16 @@ namespace RPG.Movement
 
         #region Public
 
-        public void StartMoveAction(Vector3 destination)
+        public void StartMoveAction(Vector3 destination, float speedFraction)
         {
             _scheduler.StartAction(this);
-            MoveTo(destination);               
+            MoveTo(destination, speedFraction);               
         }
 
-        public void MoveTo(Vector3 destination)
+        public void MoveTo(Vector3 destination, float speedFraction)
         {
             _navMeshAgent.SetDestination(destination);
+            _navMeshAgent.speed = maxSpeed * Mathf.Clamp01(speedFraction);
             _navMeshAgent.isStopped = false;
         }
         

@@ -13,6 +13,9 @@ namespace RPG.Control
     public class EnemyController : MonoBehaviour
     {
         #region Expose in Inspector
+
+        [Range(0,1)]
+        [SerializeField] private float patrolSpeedFraction = 0.3f;
         
         [SerializeField] private float waypointDistanceTolerance = 1f;
         [SerializeField] private float chaseDistance = 5f;
@@ -85,7 +88,7 @@ namespace RPG.Control
             
             if (_timeSinceLastWaypoint > waypointWaitTime)
             {
-                _mover.StartMoveAction(nextPosition);
+                _mover.StartMoveAction(nextPosition, patrolSpeedFraction);
             }
         }
 
