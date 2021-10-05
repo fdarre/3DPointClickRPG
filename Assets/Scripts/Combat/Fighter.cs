@@ -52,6 +52,7 @@ namespace RPG.Combat
         {
             _animationController.TriggerStopAttack();
             _target = null;
+            _mover.Cancel();
         }
 
         public void Hit()
